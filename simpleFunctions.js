@@ -5,7 +5,6 @@ const multMatrByNum = (matrix, num) => {
   for (let i = 0; i < matrix.length; i++) {
     const row = matrix[i];
     const multRow = row.map(el => el * num);
-    console.log(multRow);
     res[i] = multRow;
   }
   return res;
@@ -22,6 +21,11 @@ const haveOneSize = (matr1, matr2) => {
   const rowLen2 = matr2[0].length;
   return columnLen1 === columnLen2 && rowLen1 === rowLen2;
 };
+
+const sumFunct = (a, b) => a + b;
+const multFunct = (a, b) => a * b;
+const divFunct = (a, b) => a / b; 
+const substractFunct = (a, b) => a - b;
 
 const elemByElemFunct = (matr1, matr2, funct) => {
   if (!haveOneSize(matr1, matr2)) return false; 
@@ -144,6 +148,26 @@ const getInvertMatr = matrix => {
   return multMatrByNum(adjMatr, 1/det);
 }
 
+
+const getStepMatr = matrix => {
+  const res = matrix.map(row => Array.from(row));
+  for (let j = 0; j < res[0].length; j++) {
+    const elemOfMatr = res[j][j];
+    const mainRow = res[j].map(el => el / elemOfMatr);
+    for (let i = j + 1; i < res.length; i++) {
+      const stepRow = res[i];
+      const stepElem = stepRow[j];
+      const substrRow = mainRow.map(el => el * stepElem);
+      const result = elemByElemFunct([stepRow], [substrRow], substractFunct).flat();
+      console.dir({mainRow, stepElem, substrRow, stepRow, result})
+      res[i] = result;
+      console.log(res[i]);
+      console.table(res);
+    }
+  }
+  return res;
+}
+
 const arr1 = [ 
 [1, 2, 3, 1, 1, 2, 3, ],
 [4, 2, 3, 2, 2, 2, 3, ],
@@ -158,5 +182,6 @@ const arr2 = [
 [1, 5],
 [1, 2],
 ];
-console.table(multMatrByNum(arr2, 4))
-console.table(multMatrix(getInvertMatr(arr2), arr2))
+
+// console.log(elemByElemFunct([arr2[0]], [arr2[1]], sumFunct))
+getStepMatr(arr1);
