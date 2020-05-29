@@ -2,6 +2,10 @@
 class RationalFractions {
 
   static makeFract(numerator, denominator = 1) {
+    if (denominator < 0) {
+      numerator *= -1;
+      denominator *= -1;
+    }
     return `${numerator}/${denominator}`
   }
 
@@ -10,15 +14,24 @@ class RationalFractions {
     const arr = fract.split('/');
     return arr.map(el => parseInt(el));    
   }
+
+  static getfractWithBase10(fract) {
+    const [numerator, denominator] = RationalFractions.splitFract(fract);
+    return numerator / denominator;   
+  }
   
   static findGCD() {
-    if (arguments.length == 2) {
-      if (arguments[1] == 0) return arguments[0];
-      else return RationalFractions.findGCD(arguments[1], arguments[0] % arguments[1]);
-    } else if (arguments.length > 2) {
-      var result = RationalFractions.findGCD(arguments[0], arguments[1]);
-      for (let i = 2; i < arguments.length; i++)
-        result = RationalFractions.findGCD(result, arguments[i]);
+    const args = [];
+    for (let i = 0; i < arguments.length; i++) {
+      args[i] = Math.abs(arguments[i])
+    }
+    if (args.length == 2) {
+      if (args[1] == 0) return args[0];
+      else return RationalFractions.findGCD(args[1], args[0] % args[1]);
+    } else if (args.length > 2) {
+      var result = RationalFractions.findGCD(args[0], args[1]);
+      for (let i = 2; i < args.length; i++)
+        result = RationalFractions.findGCD(result, args[i]);
       return result;
     }
   }
@@ -44,7 +57,6 @@ class RationalFractions {
   static sum(fract1, fract2) {
     let [num1, det1] = RationalFractions.splitFract(fract1);
     let [num2, det2] = RationalFractions.splitFract(fract2);
-    console.dir({num1, det1, num2, det2})
     const denominator = RationalFractions.findLCM(det1, det2);
     const coef1 = denominator / det1;
     const coef2 = denominator / det2;
@@ -78,6 +90,7 @@ class RationalFractions {
     const newFract = RationalFractions.makeFract(det2, num2);
     return RationalFractions.mult(fract1, newFract);
   }
+
 }
-console.log(RationalFractions.sum(1, '2/1'));
-// module.exports = RationalFractions;
+
+module.exports = RationalFractions;
