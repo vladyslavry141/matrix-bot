@@ -178,7 +178,7 @@ const getStepMatr = matrix => {
     }
   }
   return res;
-}
+};
 
 const getRange = matrix => {
   let nullRowNum = 0;
@@ -188,7 +188,9 @@ const getRange = matrix => {
     if (isNullRow(stepMatr[i])) nullRowNum++;
   }
   return len - nullRowNum;
-}
+};
+
+
 
 const arr1 = [ 
 [1, 2, 3, 1, 1, 2, 3, ],

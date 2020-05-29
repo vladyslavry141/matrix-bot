@@ -15,6 +15,27 @@ class RationalFractions {
     return arr.map(el => parseInt(el));    
   }
 
+  static isFract(fract) {
+    if (typeof fract === 'number') {
+      return true;
+    }
+    if (typeof fract !== 'string') {
+      return false;
+    }
+    const arr = fract.split('/');
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i] === '') return false;
+    }
+    if (arr.length === 1) {
+      return !isNaN(Number(arr1)) 
+    }
+    if (arr.length > 2) return false;
+    const numerator = Number(arr[0]);
+    const denominator = Number(arr[1]);
+    if (isNaN(numerator) || isNaN(denominator)) return false
+    return true;
+  }
+
   static getfractWithBase10(fract) {
     const [numerator, denominator] = RationalFractions.splitFract(fract);
     return numerator / denominator;   
