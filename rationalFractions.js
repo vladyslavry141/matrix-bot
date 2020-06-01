@@ -27,7 +27,7 @@ class RationalFractions {
       if (arr[i] === '') return false;
     }
     if (arr.length === 1) {
-      return !isNaN(Number(arr1)) 
+      return !isNaN(Number(arr[0])) 
     }
     if (arr.length > 2) return false;
     const numerator = Number(arr[0]);
