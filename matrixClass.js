@@ -1,10 +1,32 @@
 'use strict';
 
-const ratFract = require('./rationalFractions.js')
+const RatFract = require('./rationalFractions.js')
 
 class Matrix {
   constructor(matrix) {
     this.matrix = matrix;
+  }
+  
+  static isValid(matrix) {
+    if (!Array.isArray(matrix)) {
+      return false;
+    }
+    if (matrix.length < 1) {
+      return false;
+    }
+    const mainLen = matrix[0].length;
+    for (let i = 0; i < matrix.length; i++) {
+      const len = matrix[i].length;
+      if (len !== mainLen) {
+        return false;
+      }
+      for (let j = 0; j < mainLen; j++) {
+        if (!RatFract.isFract(matrix[i][j])) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
   static haveOneSize(matr1, matr2) {
@@ -44,8 +66,8 @@ class Matrix {
       for (let j = 0; j < matr2.matrix[0].length; j++) {
         let sum = 0;
         for (let e = 0; e < matr1.matrix[0].length; e++) {
-          const stepSum =  ratFract.mult(matr1.matrix[i][e], matr2.matrix[e][j]);
-          sum = ratFract.sum(sum, stepSum);
+          const stepSum =  RatFract.mult(matr1.matrix[i][e], matr2.matrix[e][j]);
+          sum = RatFract.sum(sum, stepSum);
         }
         res[i][j] = sum;
       }
@@ -72,16 +94,16 @@ class Matrix {
 
   static getDet2x2(matr) {
     if (matr.matrix.length === 1) return matr.matrix[0][0];
-    const mainD = ratFract.mult(matr.matrix[0][0], matr.matrix[1][1]);
-    const sideD = ratFract.mult(matr.matrix[0][1], matr.matrix[1][0]);
-    return ratFract.substract(mainD, sideD);
+    const mainD = RatFract.mult(matr.matrix[0][0], matr.matrix[1][1]);
+    const sideD = RatFract.mult(matr.matrix[0][1], matr.matrix[1][0]);
+    return RatFract.substract(mainD, sideD);
 };
 
   multByNum(num) {
   const res = [];
     for (let i = 0; i < this.matrix.length; i++) {
       const row = this.matrix[i];
-      const multRow = row.map(el => ratFract.mult(el, num));
+      const multRow = row.map(el => RatFract.mult(el, num));
       res[i] = multRow;
     }
     return new Matrix(res);
@@ -153,38 +175,60 @@ class Matrix {
     const det = this.getDet();
     if (!det) return false;
     if (this.matrix.length === 1) {
-      const invertNum = ratFract.div(1, this.matrix[0][0]);
+      const invertNum = RatFract.div(1, this.matrix[0][0]);
       return new Matrix([[invertNum]]);
     }
-    const num = ratFract.div(1, det);
+    const num = RatFract.div(1, det);
     const adjMatr = this.adjunctMatr();
     return adjMatr.multByNum(num);
   }
 
-  stepMatr() {
+  static copy(matrix) {
+    const copiedMatr = matrix.map(row => Array.from(row));
+    return new Matrix(copiedMatr);
+  }
+
+  findValidRow(startRowInd, startColInd) {
+    let nextInd = -1;
+    for (let i = startRowInd; i < this.matrix.length; i++) {
+      const elem = this.matrix[i][startColInd];
+      if (!elem) continue;
+      nextInd = i;
+      break;
+    };
+    return nextInd;
+  }
+
+  swapRow(firstInd, secondInd) {
+    if (firstInd === secondInd) return;
+    const [min, max] = [firstInd, secondInd].sort((a, b) => a - b);
+    if (max > this.matrix.length) return;
+    const row1 = this.matrix.splice(max, 1);
+    const row2 = this.matrix.splice(min, 1);
+    this.matrix.splice(min, 0, ...row1);
+    this.matrix.splice(max, 0, ...row2);
+  }
+
+  getStepMatr() {
     let startRowInd = 0
-    const matr = this.matrix.map(row => Array.from(row));
-    const res = new Matrix(matr);
-    for (let j = startRowInd; j < res.matrix[0].length; j++) {
-      let start = -1;
-      for (let i = startRowInd + 1; i < res.matrix.length; i++) {
-        const elem = res.matrix[i][j];
-        if (!elem) continue;
-        start = i;
-        break;
-      }
+    const stepMatr = Matrix.copy(this.matrix);
+    for (let j = 0; j < stepMatr.matrix[0].length; j++) {
+      const start = stepMatr.findValidRow(startRowInd, j);
       if (start === -1) continue;
-      startRowInd = start;
-      const elemOfMatr = res.matrix[start][j];
-      const mainRow = res.matrix[start].map(el => ratFract.div(el, elemOfMatr));
-      for (let i = startRowInd + 1; i < res.length; i++) {
-        const stepRow = res.matrix[i];
-        const stepElem = stepRow[j];
-        const substrRow = mainRow.map(el => ratFract.mult(el, stepElem));
-        res.matrix[i] = Matrix.elemByElemFunct([stepRow], [substrRow], ratFract.substract).flat();
+      stepMatr.swapRow(start, startRowInd);
+      const startRow = stepMatr.matrix[startRowInd];
+      const denominator = startRow[j];
+      const mainRow = startRow.map(el => RatFract.div(el, denominator));
+      for (let i = startRowInd + 1; i < stepMatr.matrix.length; i++) {
+        const stepRow = new Matrix([stepMatr.matrix[i]]);
+        const stepElem = stepRow.matrix[0][j];
+        const substrRow = new Matrix([mainRow.map(el => RatFract.mult(el, stepElem))]);
+        const res = Matrix.elemByElemFunct(stepRow, substrRow, RatFract.substract);
+        stepMatr.matrix[i] = res.matrix.flat();
       }
+      startRowInd++;
     }
-    return res;
+    return stepMatr;
   }
 
   getRange() {
@@ -198,78 +242,5 @@ class Matrix {
   }
 }
 
-const arr1 = [ 
-[1, 2, 3, 1, 1, 2, 3, ],
-[4, 2, 3, 2, 2, 2, 3, ],
-[10, 5, 3, 3, 3, 2, 3, ],
-[12, 5, 3, 5, 4, 3, 3, ],
-[12, 5, 3, 5, 5, 4, 5, ],
-[12, 5, 3, 5, 6, 2, 6, ],
-[12, 5, 3, 5, 7, 2, 7, ],
-[12, 5, 3, 5, 7, 2, 145, ],
-];
+module.exports = Matrix;
 
-const matr1 = new Matrix(arr1);
-
-const arr2 = [
-[1, 5],
-[1, 2],
-];
-
-const matr2 = new Matrix(arr2);
-
-
-const arr3 = [ 
-[1, 2, 3, 1, 1, 2, 3, ],
-[4, 2, 3, 2, 2, 2, 3, ],
-[10, 5, 3, 3, 3, 2, 3, ],
-];
-
-const matr3 = new Matrix(arr3);
-
-
-const arr4 = [
-[0,0,0,0],
-[0,0,1,2],
-[0,0,1,2],
-[0,0,0,3],
-];
-
-const matr4 = new Matrix(arr4);
-
-const arr5 = [ 
-[1, 2, 3, 1, 1, 2, 3, ],
-[4, 2, 3, 2, 2, 2, 3, ],
-[10, 5, 3, 3, 3, 2, 3, ],
-[12, 5, 3, 5, 4, 3, 3, ],
-[12, 5, 3, 5, 5, 4, 5, ],
-[12, 5, 3, 5, 6, 2, 6, ],
-[12, 5, 3, 5, 7, 2, 7, ],
-];
-
-const matr5 = new Matrix(arr5);
-
-const arr6 = [
-[1,1,1,1],
-[0,0,1,2],
-[0,0,1,2],
-[0,0,0,3],
-];
-
-const matr6 = new Matrix(arr6);
-
-const arr7 = [
-[1, 1, 1],
-[1, 1, 1],
-[1, 1, 1],
-];
-
-const matr7 = new Matrix(arr7);
-
-const arr8 = [[4]];
-
-const matr8 = new Matrix(arr8);
-
-
-// console.log(matr3.getDet())
-console.table(matr6.stepMatr().matrix)
