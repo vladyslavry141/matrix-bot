@@ -1,0 +1,7 @@
+{
+  "start" : "Привіт, це бот для елементарних дій з матрицями, щоб додати матрицю напиши /m і назву твоєї матриці(Латинська велика літера)",
+  "sendName": "Name of your matrix is: ",
+  "enterMatr": "Please enter your matrix:",
+  "invalidMatr": "Matrix is invalid.\nPlease enter your matrix:",
+  "matrNotExist": "This matrix didnt exist"
+}

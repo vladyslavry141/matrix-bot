@@ -2,7 +2,9 @@
 
 const TelegramBot = require('node-telegram-bot-api');
 const Matrix = require('./matrixClass.js');
-const token = require('./token.json');
+const { token } = require('./token.json');
+const answ = require('./answers.json');
+console.log(token)
 
 if (token.split(':').length !== 2 || token.split(':')[1].length !== 35) {
   throw new Error('The variable token seems to be malformatted.')
@@ -10,14 +12,6 @@ if (token.split(':').length !== 2 || token.split(':')[1].length !== 35) {
 
 const bot = new TelegramBot(token, { polling: true });
 const matrices = {};
-const answ = {
-  start : `Привіт, це бот для елементарних дій з матрицями, щоб додати матрицю напиши /m
-     і назву твоєї матриці(Латинська велика літера)`,
-  sendName: 'Name of your matrix is: ',
-  enterMatr: 'Please enter your matrix:',
-  invalidMatr: 'Matrix is invalid.\nPlease enter your matrix:',
-  matrNotExist: 'This matrix didnt exist',
-};
 
 const isComand = msg => {
   console.log(msg.text[0])
