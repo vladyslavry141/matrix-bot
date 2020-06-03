@@ -59,7 +59,9 @@ class Matrix {
   }
 
   static multMatrix(matr1, matr2) {
-    if (!Matrix.areAgreed(matr1, matr2)) return false;
+    if (!Matrix.areAgreed(matr1, matr2)) {
+      return 'Matrices are not agreed';
+    }
     const res = [];
     for (let i = 0; i < matr1.matrix.length; i++) {
       res[i] = [];
@@ -132,7 +134,7 @@ class Matrix {
     return Matrix.areEqual(this, transposed);
   }
 
-  isSqure() {
+  isSquare() {
     return this.matrix.length === this.matrix[0].length;
   }
 
@@ -146,7 +148,9 @@ class Matrix {
   }
 
   getDet() {
-    if (!this.isSqure()) return false;
+    if (!this.isSquare()) {
+      return 'Matrix is not square'
+    };
     if (this.matrix.length < 3) return Matrix.getDet2x2(this);
     let det = 0;
     for (let j = 0; j < this.matrix[0].length; j++) {
@@ -157,29 +161,29 @@ class Matrix {
     return det;
   }
 
-  adjunctMatr() {
+  getAdjunct() {
     const res = this.matrix.map(el => []);
     for (let i = 0; i < this.matrix.length; i++) {
       for (let j = 0; j < this.matrix[0].length; j++) {
         const minorMatr = this.getMatrixForMinor(i, j);
-        console.table(minorMatr.matrix)
         res[i][j] = ((-1)**(i + j)) * minorMatr.getDet();
-        console.log(res[i][j]);
       }
     }
     const matr = new Matrix(res);
     return matr.transpose();
   }
 
-  invertMatr() {
+  getInvert() {
     const det = this.getDet();
-    if (!det) return false;
+    if (typeof det === 'string') {
+      return 'Matrix is not invertible';
+    }
     if (this.matrix.length === 1) {
       const invertNum = RatFract.div(1, this.matrix[0][0]);
       return new Matrix([[invertNum]]);
     }
     const num = RatFract.div(1, det);
-    const adjMatr = this.adjunctMatr();
+    const adjMatr = this.getAdjunct();
     return adjMatr.multByNum(num);
   }
 
