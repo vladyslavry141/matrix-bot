@@ -6,9 +6,9 @@
   "author": "Vladyslav Rybak <vladyslavry141@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "node index.js",
     "test": "npm run -s lint",
     "lint": "eslint .",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -25,6 +25,6 @@
     "eslint": "^7.0.0"
   },
   "dependencies": {
-    "node-telegram-bot-api": "^0.50.0",
+    "node-telegram-bot-api": "^0.50.0"
   }
 }
