@@ -10,8 +10,10 @@ class RationalFractions {
   }
 
   static splitFract(fract) {
-    if (typeof fract === 'number') return [fract, 1];
-    const arr = fract.split('/');
+    const num = Number(fract);
+    if (!isNaN(num)) {
+      return [num, 1];
+    }    const arr = fract.split('/');
     return arr.map(el => parseInt(el));    
   }
 
