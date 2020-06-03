@@ -1,19 +1,21 @@
 'use strict';
 class RationalFractions {
 
-  static makeFract(numerator, denominator = 1) {
+  static make(numerator, denominator = 1) {
     if (denominator < 0) {
       numerator *= -1;
       denominator *= -1;
     }
-    return `${numerator}/${denominator}`
+    const fract = `${numerator}/${denominator}`;
+    return fract;
   }
 
-  static splitFract(fract) {
+  static split(fract) {
     const num = Number(fract);
     if (!isNaN(num)) {
       return [num, 1];
-    }    const arr = fract.split('/');
+    } 
+    const arr = fract.split('/');
     return arr.map(el => parseInt(el));    
   }
 
@@ -39,7 +41,7 @@ class RationalFractions {
   }
 
   static getfractWithBase10(fract) {
-    const [numerator, denominator] = RationalFractions.splitFract(fract);
+    const [numerator, denominator] = RationalFractions.split(fract);
     return numerator / denominator;   
   }
   
@@ -59,8 +61,8 @@ class RationalFractions {
     }
   }
 
-  static reduceFract(fract) {
-    let [numerator, denominator] = RationalFractions.splitFract(fract);
+  static reduce(fract) {
+    let [numerator, denominator] = RationalFractions.split(fract);
     while(true) {
       const gcd = RationalFractions.findGCD(numerator, denominator)
       if (gcd === 1) break;
@@ -70,7 +72,7 @@ class RationalFractions {
       }
     }
     if (denominator === 1) return numerator;
-    return RationalFractions.makeFract(numerator, denominator);    
+    return RationalFractions.make(numerator, denominator);    
   }
   static findLCM(a, b) {
     const mult = Math.abs(a * b);
@@ -78,39 +80,39 @@ class RationalFractions {
   }
 
   static sum(fract1, fract2) {
-    let [num1, det1] = RationalFractions.splitFract(fract1);
-    let [num2, det2] = RationalFractions.splitFract(fract2);
+    let [num1, det1] = RationalFractions.split(fract1);
+    let [num2, det2] = RationalFractions.split(fract2);
     const denominator = RationalFractions.findLCM(det1, det2);
     const coef1 = denominator / det1;
     const coef2 = denominator / det2;
     const numerator = num1 * coef1 + num2 * coef2;
-    const newFract = RationalFractions.makeFract(numerator, denominator)
-    return RationalFractions.reduceFract(newFract);
+    const newFract = RationalFractions.make(numerator, denominator)
+    return RationalFractions.reduce(newFract);
   } 
 
   static substract(fract1, fract2) {
-    let [num1, det1] = RationalFractions.splitFract(fract1);
-    let [num2, det2] = RationalFractions.splitFract(fract2);
+    let [num1, det1] = RationalFractions.split(fract1);
+    let [num2, det2] = RationalFractions.split(fract2);
     const denominator = RationalFractions.findLCM(det1, det2);
     const coef1 = denominator / det1;
     const coef2 = denominator / det2;
     const numerator = num1 * coef1 - num2 * coef1
-    const newFract = RationalFractions.makeFract(numerator, denominator)
-    return RationalFractions.reduceFract(newFract);
+    const newFract = RationalFractions.make(numerator, denominator)
+    return RationalFractions.reduce(newFract);
   } 
 
   static mult(fract1, fract2) {
-    let [num1, det1] = RationalFractions.splitFract(fract1);
-    let [num2, det2] = RationalFractions.splitFract(fract2);
+    let [num1, det1] = RationalFractions.split(fract1);
+    let [num2, det2] = RationalFractions.split(fract2);
     const numerator = num1 * num2;
     const denominator = det1 * det2;
-    const newFract = RationalFractions.makeFract(numerator, denominator)
-    return RationalFractions.reduceFract(newFract);
+    const newFract = RationalFractions.make(numerator, denominator)
+    return RationalFractions.reduce(newFract);
   }
 
   static div(fract1, fract2){
-    let [num2, det2] = RationalFractions.splitFract(fract2);    
-    const newFract = RationalFractions.makeFract(det2, num2);
+    let [num2, det2] = RationalFractions.split(fract2);    
+    const newFract = RationalFractions.make(det2, num2);
     return RationalFractions.mult(fract1, newFract);
   }
 
