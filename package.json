@@ -1,0 +1,29 @@
+{
+  "name": "matrixbot",
+  "version": "0.1.0",
+  "private": false,
+  "description": "Node.js Matrix Telegram Bot",
+  "author": "Vladyslav Rybak <vladyslavry141@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "npm run -s lint",
+    "lint": "eslint .",
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vladyslavry141/matrix-bot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vladyslavry141/matrix-bot/issues"
+  },
+  "homepage": "https://github.com/vladyslavry141/matrix-bot",
+  "engines": {
+    "node": ">=12.5.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.0.0"
+  },
+  "dependencies": {
+    "node-telegram-bot-api": "^0.50.0",
+  }
+}
