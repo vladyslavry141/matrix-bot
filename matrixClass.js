@@ -175,7 +175,7 @@ class Matrix {
 
   getInvert() {
     const det = this.getDet();
-    if (typeof det === 'string') {
+    if (typeof det === 'string' || det === 0) {
       return 'Matrix is not invertible';
     }
     if (this.matrix.length === 1) {
