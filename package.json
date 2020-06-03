@@ -6,6 +6,7 @@
   "author": "Vladyslav Rybak <vladyslavry141@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "start": "node index.js",
     "test": "npm run -s lint",
     "lint": "eslint .",
   },
