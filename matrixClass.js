@@ -197,8 +197,7 @@ class Matrix {
     for (let i = startRowInd; i < this.matrix.length; i++) {
       const elem = this.matrix[i][startColInd];
       if (!elem) continue;
-      nextInd = i;
-      break;
+      return i;
     };
     return nextInd;
   }
@@ -213,27 +212,76 @@ class Matrix {
     this.matrix.splice(max, 0, ...row2);
   }
 
-  getStepMatr() {
-    let startRowInd = 0
+  static getRowForStepM(mainRow, stepRow, index) {
+      const denominator = mainRow[index];
+      const numerator = stepRow[index]
+      const coeff = RatFract.div(numerator, denominator); 
+      const substrRow = mainRow.map(el => RatFract.mult(el, coeff));
+      const stepMatr = new Matrix([stepRow]);
+      const substrMatr = new Matrix([substrRow])
+      const res = Matrix.elemByElemFunct(stepMatr, substrMatr, RatFract.substract); 
+      return res.matrix.flat()
+  }
+
+  getStepMatr(endColumn, startColumn = 0) {
+    let startRowInd = 0;
     const stepMatr = Matrix.copy(this.matrix);
-    for (let j = 0; j < stepMatr.matrix[0].length; j++) {
-      const start = stepMatr.findValidRow(startRowInd, j);
+    if (!(endColumn >= 0) ) {
+      endColumn = stepMatr.matrix[0].length;
+    }
+    for (let j = startColumn; j < endColumn; j++) {
+      const start = stepMatr.findValidRow(startRowInd, j)
       if (start === -1) continue;
       stepMatr.swapRow(start, startRowInd);
       const startRow = stepMatr.matrix[startRowInd];
-      const denominator = startRow[j];
-      const mainRow = startRow.map(el => RatFract.div(el, denominator));
       for (let i = startRowInd + 1; i < stepMatr.matrix.length; i++) {
-        const stepRow = new Matrix([stepMatr.matrix[i]]);
-        const stepElem = stepRow.matrix[0][j];
-        const substrRow = new Matrix([mainRow.map(el => RatFract.mult(el, stepElem))]);
-        const res = Matrix.elemByElemFunct(stepRow, substrRow, RatFract.substract);
-        stepMatr.matrix[i] = res.matrix.flat();
+        const stepRow = stepMatr.matrix[i];
+        stepMatr.matrix[i] = Matrix.getRowForStepM(startRow, stepRow, j);
       }
       startRowInd++;
     }
     return stepMatr;
   }
+
+  findValidRowFromBottom(startRowInd, startColInd) {    
+    let nextInd = -1;
+    for (let i = startRowInd; i >= 0; i--) {
+      const elem = this.matrix[i][startColInd];
+      if (!elem) continue;
+      return i;
+    };
+    return nextInd;    
+  }
+
+  getStepMatrReversed(startColumn, endColumn = 0) {
+    const stepMatr = Matrix.copy(this.matrix);
+    if (!(startColumn >= 0) ) {
+      startColumn = stepMatr.matrix[0].length - 1;
+    }
+    let startRowInd = stepMatr.matrix.length - 1;
+    for (let j = startColumn; j >= endColumn; j--) {
+      const start = stepMatr.findValidRowFromBottom(startRowInd, j)
+      if (start === -1) continue;
+      stepMatr.swapRow(start, startRowInd);
+      const startRow = stepMatr.matrix[startRowInd];
+      for (let i = startRowInd - 1; i >= 0; i--) {
+        const stepRow = stepMatr.matrix[i];
+        stepMatr.matrix[i] = Matrix.getRowForStepM(startRow, stepRow, j);
+      }
+      startRowInd--;
+    }
+    return stepMatr;
+  }
+
+  //SoLE = System of Linear Equations
+  static findSolOfSoLE(matrix) {
+    const matr = new Matrix(matrix);
+    const columnIndex = matr.matrix[0].length - 2;
+    const step1Matr = matr.getStepMatr(columnIndex);
+    console.table(step1Matr.matrix);
+    const step2Matr = step1Matr.getStepMatrReversed(columnIndex);
+    console.table(step2Matr.matrix);
+  } 
 
   getRange() {
     let nullRowNum = 0;
@@ -247,4 +295,3 @@ class Matrix {
 }
 
 module.exports = Matrix;
-
