@@ -1,12 +1,12 @@
 'use strict';
 
-const RatFract = require('./rationalFractions.js')
+const RatFract = require('./rationalFractions.js');
 
 class Matrix {
   constructor(matrix) {
     this.matrix = matrix;
   }
-  
+
   static isValid(matrix) {
     if (!Array.isArray(matrix)) {
       return false;
@@ -39,14 +39,14 @@ class Matrix {
   static elemByElemFunct(matr1, matr2, funct) {
     if (!Matrix.haveOneSize(matr1, matr2)) {
       return false;
-    } 
+    }
     const res = [];
     const columnNum = matr1.matrix.length;
     const rowNum = matr1.matrix[0].length;
     for (let i = 0; i < columnNum; i++) {
       res[i] = [];
       for (let j = 0; j < rowNum; j++) {
-        res[i][j] = funct(matr1.matrix[i][j], matr2.matrix[i][j])
+        res[i][j] = funct(matr1.matrix[i][j], matr2.matrix[i][j]);
       }
     }
     return new Matrix(res);
@@ -55,7 +55,7 @@ class Matrix {
   static areAgreed(matr1, matr2) {
     const columnNum1 = matr1.matrix[0].length;
     const rowNum2 = matr2.matrix.length;
-    return columnNum1 === rowNum2;  
+    return columnNum1 === rowNum2;
   }
 
   static multMatrix(matr1, matr2) {
@@ -68,7 +68,8 @@ class Matrix {
       for (let j = 0; j < matr2.matrix[0].length; j++) {
         let sum = 0;
         for (let e = 0; e < matr1.matrix[0].length; e++) {
-          const stepSum =  RatFract.mult(matr1.matrix[i][e], matr2.matrix[e][j]);
+          const stepSum =  RatFract
+            .mult(matr1.matrix[i][e], matr2.matrix[e][j]);
           sum = RatFract.sum(sum, stepSum);
         }
         res[i][j] = sum;
@@ -85,7 +86,7 @@ class Matrix {
       }
     }
     return true;
-  };
+  }
 
   static isNullRow(row) {
     for (let i = 0; i < row.length; i++) {
@@ -99,10 +100,10 @@ class Matrix {
     const mainD = RatFract.mult(matr.matrix[0][0], matr.matrix[1][1]);
     const sideD = RatFract.mult(matr.matrix[0][1], matr.matrix[1][0]);
     return RatFract.substract(mainD, sideD);
-};
+  }
 
   multByNum(num) {
-  const res = [];
+    const res = [];
     for (let i = 0; i < this.matrix.length; i++) {
       const row = this.matrix[i];
       const multRow = row.map(el => RatFract.mult(el, num));
@@ -112,7 +113,7 @@ class Matrix {
   }
 
   getColumn(index) {
-    const column = []
+    const column = [];
     for (let j = 0; j < this.matrix.length; j++) {
       column[j] = this.matrix[j][index];
     }
@@ -149,14 +150,14 @@ class Matrix {
 
   getDet() {
     if (!this.isSquare()) {
-      return 'Matrix is not square'
-    };
+      return 'Matrix is not square';
+    }
     if (this.matrix.length < 3) return Matrix.getDet2x2(this);
     let det = 0;
     for (let j = 0; j < this.matrix[0].length; j++) {
       const minorMatr = this.getMatrixForMinor(0, j);
-      const el = this.matrix[0][j]; 
-      det+= ((-1)**(j)) * minorMatr.getDet() * el;
+      const el = this.matrix[0][j];
+      det += ((-1) ** (j)) * minorMatr.getDet() * el;
     }
     return det;
   }
@@ -166,7 +167,7 @@ class Matrix {
     for (let i = 0; i < this.matrix.length; i++) {
       for (let j = 0; j < this.matrix[0].length; j++) {
         const minorMatr = this.getMatrixForMinor(i, j);
-        res[i][j] = ((-1)**(i + j)) * minorMatr.getDet();
+        res[i][j] = ((-1) ** (i + j)) * minorMatr.getDet();
       }
     }
     const matr = new Matrix(res);
@@ -193,12 +194,12 @@ class Matrix {
   }
 
   findValidRow(startRowInd, startColInd) {
-    let nextInd = -1;
+    const nextInd = -1;
     for (let i = startRowInd; i < this.matrix.length; i++) {
       const elem = this.matrix[i][startColInd];
       if (!elem) continue;
       return i;
-    };
+    }
     return nextInd;
   }
 
@@ -213,24 +214,25 @@ class Matrix {
   }
 
   static getRowForStepM(mainRow, stepRow, index) {
-      const denominator = mainRow[index];
-      const numerator = stepRow[index]
-      const coeff = RatFract.div(numerator, denominator); 
-      const substrRow = mainRow.map(el => RatFract.mult(el, coeff));
-      const stepMatr = new Matrix([stepRow]);
-      const substrMatr = new Matrix([substrRow])
-      const res = Matrix.elemByElemFunct(stepMatr, substrMatr, RatFract.substract); 
-      return res.matrix.flat()
+    const denominator = mainRow[index];
+    const numerator = stepRow[index];
+    const coeff = RatFract.div(numerator, denominator);
+    const substrRow = mainRow.map(el => RatFract.mult(el, coeff));
+    const stepMatr = new Matrix([stepRow]);
+    const substrMatr = new Matrix([substrRow]);
+    const res = Matrix
+      .elemByElemFunct(stepMatr, substrMatr, RatFract.substract);
+    return res.matrix.flat();
   }
 
   getStepMatr(endColumn, startColumn = 0) {
     let startRowInd = 0;
     const stepMatr = Matrix.copy(this.matrix);
-    if (!(endColumn >= 0) ) {
+    if (!(endColumn >= 0)) {
       endColumn = stepMatr.matrix[0].length;
     }
     for (let j = startColumn; j < endColumn; j++) {
-      const start = stepMatr.findValidRow(startRowInd, j)
+      const start = stepMatr.findValidRow(startRowInd, j);
       if (start === -1) continue;
       stepMatr.swapRow(start, startRowInd);
       const startRow = stepMatr.matrix[startRowInd];
@@ -243,24 +245,24 @@ class Matrix {
     return stepMatr;
   }
 
-  findValidRowFromBottom(startRowInd, startColInd) {    
-    let nextInd = -1;
+  findValidRowFromBottom(startRowInd, startColInd) {
+    const nextInd = -1;
     for (let i = startRowInd; i >= 0; i--) {
       const elem = this.matrix[i][startColInd];
       if (!elem) continue;
       return i;
-    };
-    return nextInd;    
+    }
+    return nextInd;
   }
 
   getStepMatrReversed(startColumn, endColumn = 0) {
     const stepMatr = Matrix.copy(this.matrix);
-    if (!(startColumn >= 0) ) {
+    if (!(startColumn >= 0)) {
       startColumn = stepMatr.matrix[0].length - 1;
     }
     let startRowInd = stepMatr.matrix.length - 1;
     for (let j = startColumn; j >= endColumn; j--) {
-      const start = stepMatr.findValidRowFromBottom(startRowInd, j)
+      const start = stepMatr.findValidRowFromBottom(startRowInd, j);
       if (start === -1) continue;
       stepMatr.swapRow(start, startRowInd);
       const startRow = stepMatr.matrix[startRowInd];
@@ -281,7 +283,7 @@ class Matrix {
     console.table(step1Matr.matrix);
     const step2Matr = step1Matr.getStepMatrReversed(columnIndex);
     console.table(step2Matr.matrix);
-  } 
+  }
 
   getRange() {
     let nullRowNum = 0;
