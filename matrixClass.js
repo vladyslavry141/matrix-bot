@@ -157,7 +157,10 @@ class Matrix {
     for (let j = 0; j < this.matrix[0].length; j++) {
       const minorMatr = this.getMatrixForMinor(0, j);
       const el = this.matrix[0][j];
-      det += ((-1) ** (j)) * minorMatr.getDet() * el;
+      const minorDet = minorMatr.getDet();
+      const coeff = (((-1) ** (j)) * el);
+      console.dir({det, el, j, f:((-1) ** (j)), det: minorMatr.getDet(), el, res: RatFract.mult(coeff, minorDet)})
+      det = RatFract.sum(det, RatFract.mult(coeff, minorDet));
     }
     return det;
   }
@@ -296,4 +299,11 @@ class Matrix {
   }
 }
 
+const arr = [
+[1, 3, 3],
+[2, 5, 6],
+['3/2', 7, 9],
+]
+const matr = new Matrix(arr);
+console.table(matr.getDet())
 module.exports = Matrix;
