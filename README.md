@@ -1,20 +1,18 @@
-# matrix-bot
-Простий телеграм бот створений для роботи з матрицями на основі node-telegram-bot-api.
+#matrix-bot
 
-### Реалізовано:
-- множення матриць;
-- обчислення визначника;
-- пошук оберненої матриці;
-- транспонування;
-- знаходження рангу матриці;
+#Introduction
+matrix-bot is a chatbot for the Telegram Messaging Plattform which purpose
+is working with matrix like finding determinant, invert matrix, etc.
 
-### В планах:
-- вирішення СЛАР;
-- розв'язання матричних рівнянь;
-- підтримка десяткових дробів 
-- створення бота
 
-## License
+###Using this bot
+
+**Option B:** Host one yourself. You will need a bot token from the
+[BotFather](https://t.me/botfather) and a server with nodejs and npm installed
+to run it.
+
+
+## License and Copyright
 Copyright (c) 2020 Vladyslav Rybak
 
 This software is [MIT licensed](./LICENSE).
