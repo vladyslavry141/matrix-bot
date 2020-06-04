@@ -91,12 +91,12 @@ class RationalFractions {
   } 
 
   static substract(fract1, fract2) {
-    let [num1, det1] = RationalFractions.split(fract1);
-    let [num2, det2] = RationalFractions.split(fract2);
+    const [num1, det1] = RationalFractions.split(fract1);
+    const [num2, det2] = RationalFractions.split(fract2);
     const denominator = RationalFractions.findLCM(det1, det2);
     const coef1 = denominator / det1;
     const coef2 = denominator / det2;
-    const numerator = num1 * coef1 - num2 * coef1
+    const numerator = num1 * coef1 - num2 * coef2;
     const newFract = RationalFractions.make(numerator, denominator)
     return RationalFractions.reduce(newFract);
   } 
