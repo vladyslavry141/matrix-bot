@@ -297,7 +297,7 @@ class Matrix {
   }
 
   //SoLE = System of Linear Equations
-  
+
   static findSolOfSoLE(extendMatr) {
     const systemMatr = Matrix.getSystemMatr(extendMatr.matrix);
     const columnIndex = extendMatr.matrix[0].length - 2;
@@ -305,9 +305,9 @@ class Matrix {
     const extendMatrRang = extendMatr.getRange();
     if (extendMatrRang > systemMatrRang) {
       return 'System have not any solutions';
-    } 
-    if (extendMatrRang < systemMatrRang ) {
-      return 'System have infinitely many solutions'
+    }
+    if (extendMatrRang < systemMatrRang) {
+      return 'System have infinitely many solutions';
     }
     if (extendMatrRang === systemMatrRang) {
       if (extendMatrRang !== extendMatr.length) {
@@ -315,7 +315,7 @@ class Matrix {
       }
       const step1Matr = extendMatr.getStepMatr(columnIndex);
       const step2Matr = step1Matr.getStepMatrReversed(columnIndex);
-      const columnNum = step2Matr.matrix[0].length
+      const columnNum = step2Matr.matrix[0].length;
       let res = 'Solution:\n';
       for (let i = 0; i < step2Matr.matrix.length; i++) {
         const coeff = step2Matr.matrix[i][i];
@@ -324,7 +324,7 @@ class Matrix {
         res += `  X${i + 1} = ${value}\n`;
       }
       return res;
-    } 
+    }
   }
 }
 

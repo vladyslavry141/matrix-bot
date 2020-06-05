@@ -18,7 +18,7 @@ const IsThereMatr = (chatId, name) => {
     return true;
   }
   return false;
-}
+};
 
 const matrixToText = matr => {
   let res = '';
@@ -37,7 +37,7 @@ const systemToText = matr => {
       text += `(${matr[i][j]})*X${j + 1} + `;
     }
     text += `(${matr[i][columnNum - 2]})*X${columnNum - 1} `;
-    text += `= ${matr[i][columnNum - 1]}\n  `; 
+    text += `= ${matr[i][columnNum - 1]}\n  `;
   }
   return text;
 };
@@ -91,7 +91,7 @@ const invertMatr = (msg, match) => {
       invertedMatr :
       matrixToText(invertedMatr.matrix);
     bot.sendMessage(chatId, text);
-    }
+  }
 };
 
 const rangeOfMatr = (msg, match) => {
@@ -118,9 +118,9 @@ const matrToFract = matr => {
 };
 
 const deleteEmptyStr = arr => {
-  for (let i = arr.length - 1; i >=0; i--) {
+  for (let i = arr.length - 1; i >= 0; i--) {
     if (arr[i] === '') {
-      arr.splice(i, 1)
+      arr.splice(i, 1);
     }
   }
 };
@@ -133,17 +133,15 @@ const parseMatrix = text => {
     return splited.map(el => el.trim());
   });
   return matr;
-}
-
-const getKeyboardArr = name => {
-  return [[`/print ${name}`],
-          [`/determinant ${name}`],
-          [`/range ${name}`],
-          [`/transpose ${name}`],
-          [`/invert ${name}`],
-          [`/help`],
-        ]
 };
+
+const getKeyboardArr = name => [[`/print ${name}`],
+  [`/determinant ${name}`],
+  [`/range ${name}`],
+  [`/transpose ${name}`],
+  [`/invert ${name}`],
+  ['/help'],
+];
 
 const inputMatrix = (msg, name) => {
   const chatId = msg.chat.id;
@@ -161,17 +159,12 @@ const inputMatrix = (msg, name) => {
     });
   } else {
     bot.sendMessage(chatId, answ.invalidMatr);
-    bot.once('message', (msg) => inputMatrix(msg, name));
+    bot.once('message', msg => inputMatrix(msg, name));
   }
-}
+};
 
-const inputSoLe = (msg, match) => {
-  const chatId = msg.chat.id;
-  bot.sendMessage(chatId, answ.enterSystem);
-  bot.once('message', solveSoLE);
-}
 
-const solveSoLE = (msg, name) => {
+const solveSoLE = (msg) => {
   const chatId = msg.chat.id;
   const rows = msg.text.split('\n');
   const matr = rows.map(row => row.split(' '));
@@ -187,6 +180,12 @@ const solveSoLE = (msg, name) => {
   }
 };
 
+const inputSoLe = msg => {
+  const chatId = msg.chat.id;
+  bot.sendMessage(chatId, answ.enterSystem);
+  bot.once('message', solveSoLE);
+};
+
 const addMatrix = (msg, match) => {
   const chatId = msg.chat.id;
   const name = match[1];
@@ -198,7 +197,7 @@ const addMatrix = (msg, match) => {
 bot.onText(/\/start/, msg => {
   bot.sendMessage(msg.chat.id, answ.start, {
     'reply_markup': {
-      'keyboard': [['/solveSoLE'],['/help']]
+      'keyboard': [['/solveSoLE'], ['/help']]
     }
   });
 });
@@ -210,9 +209,9 @@ bot.onText(/\/invert ([A-Z]{1})/, invertMatr);
 bot.onText(/\/determinant ([A-Z]{1})/, determinant);
 bot.onText(/\/range ([A-Z]{1})/, rangeOfMatr);
 bot.onText(/\/solveSoLE/, inputSoLe);
-bot.onText(/\/help/, (msg) => {
+bot.onText(/\/help/, msg => {
   const chatId = msg.chat.id;
-  bot.sendMessage(chatId, answ.help)
+  bot.sendMessage(chatId, answ.help);
 });
 
 bot.on('polling_error', error => {
