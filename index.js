@@ -42,6 +42,22 @@ const systemToText = matr => {
   return text;
 };
 
+const printUsersMatr = msg => {
+  const chatId = msg.chat.id;
+  let text = 'Your matrices:\n'
+  if (!matrices[chatId]) {
+    bot.sendMessage(chatId, 'Your list of matrices is empty');
+  } else { 
+  for (const name in matrices[chatId]) {
+    console.log(matrices[chatId])
+    text += `${name}:\n`;
+    const matr = matrices[chatId][name];
+    text += matrixToText(matr.matrix);
+  }
+  bot.sendMessage(chatId, text);
+  }
+}
+
 const determinant = (msg, match) => {
   const chatId = msg.chat.id;
   const name = match[1];
@@ -126,7 +142,7 @@ const deleteEmptyStr = arr => {
 };
 
 const parseMatrix = text => {
-  const rows = text.split('\n');
+  let rows = text.split('\n');
   const matr = rows.map(row => {
     const splited = row.split(' ');
     deleteEmptyStr(splited);
@@ -150,7 +166,9 @@ const inputMatrix = (msg, name) => {
   bot.sendMessage(chatId, `Is your matrix:\n${matrixToText(matr)}`);
   if (Matrix.isValid(matr)) {
     matrToFract(matr);
-    matrices[chatId] = {};
+    if (!matrices[chatId]) {
+      matrices[chatId] = {};
+    }
     matrices[chatId][name] = new Matrix(matr);
     bot.sendMessage(msg.chat.id, 'What do you want to do ?', {
       'reply_markup': {
@@ -189,26 +207,28 @@ const inputSoLe = msg => {
 const addMatrix = (msg, match) => {
   const chatId = msg.chat.id;
   const name = match[1];
+  console.log(match)
   bot.sendMessage(chatId, `${answ.sendName}${name}`);
   bot.sendMessage(chatId, answ.enterMatr);
   bot.once('message', msg => inputMatrix(msg, name));
 };
 
 bot.onText(/\/start/, msg => {
-  bot.sendMessage(msg.chat.id, answ.start, {
+  bot.sendMessage(msg.chat.id, '', {
     'reply_markup': {
       'keyboard': [['/solveSoLE'], ['/help']]
     }
   });
 });
 
-bot.onText(/\/m ([A-Z]{1})/, addMatrix);
+bot.onText(/\/m ([A-Z]{1})\b/, addMatrix);
 bot.onText(/\/print ([A-Z]{1})/, printMatr);
 bot.onText(/\/transpose ([A-Z]{1})/, transposeMatr);
 bot.onText(/\/invert ([A-Z]{1})/, invertMatr);
 bot.onText(/\/determinant ([A-Z]{1})/, determinant);
 bot.onText(/\/range ([A-Z]{1})/, rangeOfMatr);
 bot.onText(/\/solveSoLE/, inputSoLe);
+bot.onText(/\/matrices/, printUsersMatr)
 bot.onText(/\/help/, msg => {
   const chatId = msg.chat.id;
   bot.sendMessage(chatId, answ.help);
