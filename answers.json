@@ -4,7 +4,7 @@
   "enterMatr": "Please enter your matrix:",
   "invalidMatr": "Matrix is invalid.\nPlease enter your matrix again:",
   "matrNotExist": "This matrix didnt exist",
-  "enterSystem": "Please enter your system:",
-  "invalidSystem": "System is invalid.\nPlease enter your system again:",
-  "help": "/m (name) - add new matrix. Name can be only one Capital Latin letter\n/print (name) - print your matrix\n/determinant (name) - show determinant of your matrix\n/range (name) - show range of your matrix\n/transpose (name) - transpose your matrix\n/invert (name) - show invertible to your matrix\n//solveSoLE - solve your linear system"
+  "enterSystem": "Please enter your system matrix:",
+  "invalidSystem": "System is invalid.\nPlease enter your system matrix again:",
+  "help": "/m (name) - add new matrix. Name can be only one Capital Latin letter\nMatrix must be entered as this:\n 1 2 3/2\n 3 4/9 5\n 1 2 3\n/print (name) - print your matrix\n/determinant (name) - show determinant of your matrix\n/range (name) - show range of your matrix\n/transpose (name) - transpose your matrix\n/invert (name) - show invertible to your matrix\n/solveSoLE - solve your linear system"
 }
