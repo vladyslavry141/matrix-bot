@@ -1,7 +1,10 @@
 {
-  "start" : "Привіт, це бот для елементарних дій з матрицями, щоб додати матрицю напиши /m і назву твоєї матриці(Латинська велика літера)",
+  "start" : "Hi, this Telegram bot was creating for actions with matrices.\nWrite /m (name) to add new matrix. Name can be only one Capital Latin letter.\n If you want solve system of linear equations tap /solveSoLE comand.",
   "sendName": "Name of your matrix is: ",
   "enterMatr": "Please enter your matrix:",
-  "invalidMatr": "Matrix is invalid.\nPlease enter your matrix:",
-  "matrNotExist": "This matrix didnt exist"
+  "invalidMatr": "Matrix is invalid.\nPlease enter your matrix again:",
+  "matrNotExist": "This matrix didnt exist",
+  "enterSystem": "Please enter your system:",
+  "invalidSystem": "System is invalid.\nPlease enter your system again:",
+  "help": "/m (name) - add new matrix. Name can be only one Capital Latin letter\n/print (name) - print your matrix\n/determinant (name) - show determinant of your matrix\n/range (name) - show range of your matrix\n/transpose (name) - transpose your matrix\n/invert (name) - show invertible to your matrix\n//solveSoLE - solve your linear system"
 }
