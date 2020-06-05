@@ -36,7 +36,7 @@ class RationalFractions {
     if (arr.length > 2) return false;
     const numerator = Number(arr[0]);
     const denominator = Number(arr[1]);
-    if (isNaN(numerator) || isNaN(denominator)) return false;
+    if (isNaN(numerator) || !denominator) return false;
     return true;
   }
 

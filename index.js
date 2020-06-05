@@ -13,6 +13,12 @@ const bot = new TelegramBot(token, { polling: true });
 const matrices = {};
 
 const isComand = msg => msg.text[0] === '/';
+const IsThereMatr = (chatId, name) => {
+  if (matrices[chatId] && matrices[chatId][name]) {
+    return true;
+  }
+  return false;
+}
 
 const matrixToText = matr => {
   let res = '';
@@ -39,10 +45,10 @@ const systemToText = matr => {
 const determinant = (msg, match) => {
   const chatId = msg.chat.id;
   const name = match[1];
-  const matr = matrices[chatId][name];
-  if (!matr) {
+  if (!IsThereMatr(chatId, name)) {
     bot.sendMessage(chatId, answ.matrNotExist);
   } else {
+    const matr = matrices[chatId][name];
     const det = matr.getDet();
     bot.sendMessage(chatId, `${det}`);
   }
@@ -51,10 +57,10 @@ const determinant = (msg, match) => {
 const printMatr = (msg, match) => {
   const chatId = msg.chat.id;
   const name = match[1];
-  const matr = matrices[chatId][name];
-  if (!matr) {
+  if (!IsThereMatr(chatId, name)) {
     bot.sendMessage(chatId, answ.matrNotExist);
   } else {
+    const matr = matrices[chatId][name];
     const text = matrixToText(matr.matrix);
     bot.sendMessage(chatId, text);
   }
@@ -63,10 +69,10 @@ const printMatr = (msg, match) => {
 const transposeMatr = (msg, match) => {
   const chatId = msg.chat.id;
   const name = match[1];
-  const matr = matrices[chatId][name];
-  if (!matr) {
+  if (!IsThereMatr(chatId, name)) {
     bot.sendMessage(chatId, answ.matrNotExist);
   } else {
+    const matr = matrices[chatId][name];
     const transposedMatr = matr.transpose();
     const text = matrixToText(transposedMatr.matrix);
     bot.sendMessage(chatId, text);
@@ -76,10 +82,10 @@ const transposeMatr = (msg, match) => {
 const invertMatr = (msg, match) => {
   const chatId = msg.chat.id;
   const name = match[1];
-  const matr = matrices[chatId][name];
-  if (!matr) {
+  if (!IsThereMatr(chatId, name)) {
     bot.sendMessage(chatId, answ.matrNotExist);
   } else {
+    const matr = matrices[chatId][name];
     const invertedMatr = matr.getInvert();
     const text = typeof invertedMatr === 'string' ?
       invertedMatr :
@@ -91,10 +97,10 @@ const invertMatr = (msg, match) => {
 const rangeOfMatr = (msg, match) => {
   const chatId = msg.chat.id;
   const name = match[1];
-  const matr = matrices[chatId][name];
-  if (!matr) {
+  if (!IsThereMatr(chatId, name)) {
     bot.sendMessage(chatId, answ.matrNotExist);
   } else {
+    const matr = matrices[chatId][name];
     const range = matr.getRange();
     bot.sendMessage(chatId, `Range is ${range}`);
   }
@@ -111,11 +117,38 @@ const matrToFract = matr => {
   }
 };
 
-const parseMatrix = (msg, name) => {
+const deleteEmptyStr = arr => {
+  for (let i = arr.length - 1; i >=0; i--) {
+    if (arr[i] === '') {
+      arr.splice(i, 1)
+    }
+  }
+};
+
+const parseMatrix = text => {
+  const rows = text.split('\n');
+  const matr = rows.map(row => {
+    const splited = row.split(' ');
+    deleteEmptyStr(splited);
+    return splited.map(el => el.trim());
+  });
+  return matr;
+}
+
+const getKeyboardArr = name => {
+  return [[`/print ${name}`],
+          [`/determinant ${name}`],
+          [`/range ${name}`],
+          [`/transpose ${name}`],
+          [`/invert ${name}`],
+          [`/help`],
+        ]
+};
+
+const inputMatrix = (msg, name) => {
   const chatId = msg.chat.id;
   if (isComand(msg)) return;
-  const rows = msg.text.split('\n');
-  const matr = rows.map(row => row.split(' '));
+  const matr = parseMatrix(msg.text);
   bot.sendMessage(chatId, `Is your matrix:\n${matrixToText(matr)}`);
   if (Matrix.isValid(matr)) {
     matrToFract(matr);
@@ -123,24 +156,19 @@ const parseMatrix = (msg, name) => {
     matrices[chatId][name] = new Matrix(matr);
     bot.sendMessage(msg.chat.id, 'What do you want to do ?', {
       'reply_markup': {
-        'keyboard': [[`/print ${name}`],
-          [`/determinant ${name}`],
-          [`/range ${name}`],
-          [`/transpose ${name}`],
-          [`/invert ${name}`],
-        ]
+        'keyboard': getKeyboardArr(name),
       }
     });
   } else {
     bot.sendMessage(chatId, answ.invalidMatr);
-    bot.once('message', solveSoLE);
+    bot.once('message', (msg) => inputMatrix(msg, name));
   }
 }
 
 const inputSoLe = (msg, match) => {
   const chatId = msg.chat.id;
   bot.sendMessage(chatId, answ.enterSystem);
-  bot.once('message', (msg) => parseMatrix(msg, name));
+  bot.once('message', solveSoLE);
 }
 
 const solveSoLE = (msg, name) => {
@@ -164,7 +192,7 @@ const addMatrix = (msg, match) => {
   const name = match[1];
   bot.sendMessage(chatId, `${answ.sendName}${name}`);
   bot.sendMessage(chatId, answ.enterMatr);
-  bot.once('message', msg => parseMatrix(msg, name));
+  bot.once('message', msg => inputMatrix(msg, name));
 };
 
 bot.onText(/\/start/, msg => {
@@ -186,7 +214,6 @@ bot.onText(/\/help/, (msg) => {
   const chatId = msg.chat.id;
   bot.sendMessage(chatId, answ.help)
 });
-
 
 bot.on('polling_error', error => {
   console.log(error);

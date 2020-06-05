@@ -306,22 +306,26 @@ class Matrix {
     if (extendMatrRang > systemMatrRang) {
       return 'System have not any solutions';
     } 
-    if (extendMatrRang < systemMatrRang) {
+    if (extendMatrRang < systemMatrRang ) {
       return 'System have infinitely many solutions'
     }
-    const step1Matr = extendMatr.getStepMatr(columnIndex);
-    const step2Matr = step1Matr.getStepMatrReversed(columnIndex);
-    const columnNum = step2Matr.matrix[0].length
-    let res = 'Solution:\n';
-    for (let i = 0; i < step2Matr.matrix.length; i++) {
-      const coeff = step2Matr.matrix[i][i];
-      const sum = step2Matr.matrix[i][columnNum - 1];
-      const value = RatFract.div(sum, coeff);
-      res += `  X${i + 1} = ${value}\n`;
-    }
-    return res;
+    if (extendMatrRang === systemMatrRang) {
+      if (extendMatrRang !== extendMatr.length) {
+        return 'System have infinitely many solutions';
+      }
+      const step1Matr = extendMatr.getStepMatr(columnIndex);
+      const step2Matr = step1Matr.getStepMatrReversed(columnIndex);
+      const columnNum = step2Matr.matrix[0].length
+      let res = 'Solution:\n';
+      for (let i = 0; i < step2Matr.matrix.length; i++) {
+        const coeff = step2Matr.matrix[i][i];
+        const sum = step2Matr.matrix[i][columnNum - 1];
+        const value = RatFract.div(sum, coeff);
+        res += `  X${i + 1} = ${value}\n`;
+      }
+      return res;
+    } 
   }
-
 }
 
 module.exports = Matrix;
