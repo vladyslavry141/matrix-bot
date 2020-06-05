@@ -159,7 +159,6 @@ class Matrix {
       const el = this.matrix[0][j];
       const minorDet = minorMatr.getDet();
       const coeff = (((-1) ** (j)) * el);
-      console.dir({det, el, j, f:((-1) ** (j)), det: minorMatr.getDet(), el, res: RatFract.mult(coeff, minorDet)})
       det = RatFract.sum(det, RatFract.mult(coeff, minorDet));
     }
     return det;
@@ -278,14 +277,13 @@ class Matrix {
     return stepMatr;
   }
 
-  //SoLE = System of Linear Equations
-  static findSolOfSoLE(matrix) {
-    const matr = new Matrix(matrix);
-    const columnIndex = matr.matrix[0].length - 2;
-    const step1Matr = matr.getStepMatr(columnIndex);
-    console.table(step1Matr.matrix);
-    const step2Matr = step1Matr.getStepMatrReversed(columnIndex);
-    console.table(step2Matr.matrix);
+  static getSystemMatr(extendMatr) {
+    const matr = [];
+    const columnNum = extendMatr[0].length;
+    for (let i = 0; i < extendMatr.length; i++) {
+      matr[i] = extendMatr[i].slice(0, columnNum - 1);
+    }
+    return new Matrix(matr);
   }
 
   getRange() {
@@ -293,17 +291,37 @@ class Matrix {
     const stepMatr = this.getStepMatr();
     const len = stepMatr.matrix.length;
     for (let i = 0; i < len; i++) {
-      if (Matrix.isNullRow(stepMatr[i])) nullRowNum++;
+      if (Matrix.isNullRow(stepMatr.matrix[i])) nullRowNum++;
     }
     return len - nullRowNum;
   }
+
+  //SoLE = System of Linear Equations
+  
+  static findSolOfSoLE(extendMatr) {
+    const systemMatr = Matrix.getSystemMatr(extendMatr.matrix);
+    const columnIndex = extendMatr.matrix[0].length - 2;
+    const systemMatrRang = systemMatr.getRange();
+    const extendMatrRang = extendMatr.getRange();
+    if (extendMatrRang > systemMatrRang) {
+      return 'System have not any solutions';
+    } 
+    if (extendMatrRang < systemMatrRang) {
+      return 'System have infinitely many solutions'
+    }
+    const step1Matr = extendMatr.getStepMatr(columnIndex);
+    const step2Matr = step1Matr.getStepMatrReversed(columnIndex);
+    const columnNum = step2Matr.matrix[0].length
+    let res = 'Solution:\n';
+    for (let i = 0; i < step2Matr.matrix.length; i++) {
+      const coeff = step2Matr.matrix[i][i];
+      const sum = step2Matr.matrix[i][columnNum - 1];
+      const value = RatFract.div(sum, coeff);
+      res += `  X${i + 1} = ${value}\n`;
+    }
+    return res;
+  }
+
 }
 
-const arr = [
-[1, 3, 3],
-[2, 5, 6],
-['3/2', 7, 9],
-]
-const matr = new Matrix(arr);
-console.table(matr.getDet())
 module.exports = Matrix;
