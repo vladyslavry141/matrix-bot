@@ -1,18 +1,18 @@
-#matrix-bot
+# matrix-bot
 
-#Introduction
+# Introduction
 matrix-bot is a chatbot for the Telegram Messaging Plattform which purpose
 is working with matrix like finding determinant, invert matrix, etc.
 
 
-###Using this bot
+### Using this bot
 
-**Option B:** Host one yourself. You will need a bot token from the
-[BotFather](https://t.me/botfather) and a server with nodejs and npm installed
+**Option a:** Host one yourself. You will need a bot token from the
+[BotFather](https://t.me/botfather) in file token.json and a server with nodejs and npm installed
 to run it.
 
 
-## License and Copyright
+### License and Copyright
 Copyright (c) 2020 Vladyslav Rybak
 
 This software is [MIT licensed](./LICENSE).
