@@ -180,17 +180,36 @@ const inputMatrix = (msg, name) => {
   }
 };
 
+const addMatrix = (msg, match) => {
+  const chatId = msg.chat.id;
+  const name = match[1];
+  bot.sendMessage(chatId, `${answ.sendName}${name}`);
+  bot.sendMessage(chatId, answ.enterMatr);
+  bot.once('message', msg => inputMatrix(msg, name));
+};
+
+const resOfSoLEtoText = res => {
+  if (typeof res === 'string') {
+    return res;
+  }
+  let text = 'Solution:\n';
+  for (let i = 0; i < res.length; i++) {
+    text += `  X${i + 1} = ${res[i]}\n`
+  }
+  return text;
+};
 
 const solveSoLE = msg => {
   const chatId = msg.chat.id;
   const rows = msg.text.split('\n');
   const matr = rows.map(row => row.split(' '));
-  if (Matrix.isValid(matr)) {
+  if (Matrix.isValid(matr) && matr[0].length > 1) {
     matrToFract(matr);
     bot.sendMessage(chatId, systemToText(matr));
     const extendMatr = new Matrix(matr);
     const solution = Matrix.findSolOfSoLE(extendMatr);
-    bot.sendMessage(chatId, solution);
+    const text = resOfSoLEtoText(solution)
+    bot.sendMessage(chatId, text);
   } else {
     bot.sendMessage(chatId, answ.invalidSystem);
     bot.once('message', solveSoLE);
@@ -203,14 +222,6 @@ const inputSoLe = msg => {
   bot.once('message', solveSoLE);
 };
 
-const addMatrix = (msg, match) => {
-  const chatId = msg.chat.id;
-  const name = match[1];
-  bot.sendMessage(chatId, `${answ.sendName}${name}`);
-  bot.sendMessage(chatId, answ.enterMatr);
-  bot.once('message', msg => inputMatrix(msg, name));
-};
-
 bot.onText(/\/start/, msg => {
   bot.sendMessage(msg.chat.id, '', {
     'reply_markup': {
@@ -218,7 +229,6 @@ bot.onText(/\/start/, msg => {
     }
   });
 });
-
 
 bot.onText(/\/m ([A-Z]{1})\b/, addMatrix);
 bot.onText(/\/print ([A-Z]{1})/, printMatr);

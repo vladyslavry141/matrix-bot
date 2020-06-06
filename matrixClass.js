@@ -11,6 +11,9 @@ class Matrix {
     if (!Array.isArray(matrix)) {
       return false;
     }
+    if (!Array.isArray(matrix[0])) {
+      return false;
+    }
     if (matrix.length < 1) {
       return false;
     }
@@ -36,6 +39,7 @@ class Matrix {
     const rowLen2 = matr2.matrix[0].length;
     return columnLen1 === columnLen2 && rowLen1 === rowLen2;
   }
+
   static elemByElemFunct(matr1, matr2, funct) {
     if (!Matrix.haveOneSize(matr1, matr2)) {
       return false;
@@ -82,7 +86,7 @@ class Matrix {
     if (!Matrix.haveOneSize(matr1, matr2)) return false;
     for (let i = 0; i < matr1.matrix.length; i++) {
       for (let j = 0; j < matr1.matrix[0].length; j++) {
-        if (!(matr1.matrix[i][j] === matr2.matrix[i][j])) return false;
+        if (matr1.matrix[i][j] !== matr2.matrix[i][j]) return false;
       }
     }
     return true;
@@ -321,12 +325,12 @@ class Matrix {
     const step1Matr = extendMatr.getStepMatr(columnIndex);
     const step2Matr = step1Matr.getStepMatrReversed(columnIndex);
     const columnNum = step2Matr.matrix[0].length;
-    let res = 'Solution:\n';
+    let res = [];
     for (let i = 0; i < step2Matr.matrix.length; i++) {
       const coeff = step2Matr.matrix[i][i];
       const sum = step2Matr.matrix[i][columnNum - 1];
       const value = RatFract.div(sum, coeff);
-      res += `  X${i + 1} = ${value}\n`;
+      res[i] = value;
     }
     return res;
   }
