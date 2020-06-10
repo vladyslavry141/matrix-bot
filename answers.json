@@ -2,7 +2,7 @@
   "start" : "Hi, this Telegram bot was creating for actions with matrices.\nWrite /addmatrix (name - optional) to add new matrix. Name can be only one Capital Latin letter.\n If you want solve system of linear equations tap /solveSoLE comand.",
   "enterName": "Please, enter name of your matrix",
   "sendName": "Name of your matrix is: ",
-  "invlidName": "Name is invalid\n(Name can be only one Capital Latin letter)\nEnter name of your matrix again",
+  "invalidName": "Name is invalid\n(Name can be only one Capital Latin letter)\nEnter name of your matrix again",
   "enterMatr": "Please, enter your matrix:",
   "invalidMatr": "Matrix is invalid.\nPlease enter your matrix again:",
   "matrNotExist": "This matrix didnt exist: ",
