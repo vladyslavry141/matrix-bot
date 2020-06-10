@@ -4,6 +4,7 @@ const TelegramBot = require('node-telegram-bot-api');
 const Matrix = require('./matrixClass.js');
 const { token } = require('./token.json');
 const answ = require('./answers.json');
+const Equations = require('./equationFunct.js');
 
 if (token.split(':').length !== 2 || token.split(':')[1].length !== 35) {
   throw new Error('The variable token seems to be malformatted.');
@@ -14,7 +15,7 @@ const matrices = {};
 
 const isComand = text => text[0] === '/';
 
-const IsThereMatr = (chatId, name) => {
+const isThereMatr = (chatId, name) => {
   if (matrices[chatId] && matrices[chatId][name]) {
     return true;
   }
@@ -67,9 +68,14 @@ const parseMatrix = text => {
   const matr = rows.map(row => {
     const splited = row.split(' ');
     deleteEmptyStr(splited);
-    return splited.map(el => el.trim());
+    return splited;
   });
-  return matr;
+  if (Matrix.isValid(matr)) {
+    matrToFract(matr);
+    return matr;
+  } else {
+    return false
+  }
 };
 
 const printUsersMatr = chatId => {
@@ -91,7 +97,7 @@ const printMatr = (chatId, args) => {
     printUsersMatr(chatId);
   } else {
     for (const name of args) {
-      if (!IsThereMatr(chatId, name)) {
+      if (!isThereMatr(chatId, name)) {
         bot.sendMessage(chatId, answ.matrNotExist + name);
       } else {
         const matr = matrices[chatId][name];
@@ -104,7 +110,7 @@ const printMatr = (chatId, args) => {
 
 const determinant = (chatId, args) => {
   for (const name of args) {
-    if (!IsThereMatr(chatId, name)) {
+    if (!isThereMatr(chatId, name)) {
       bot.sendMessage(chatId, answ.matrNotExist + name);
     } else {
       const matr = matrices[chatId][name];
@@ -116,7 +122,7 @@ const determinant = (chatId, args) => {
 
 const transposeMatr = (chatId, args) => {
   for (const name of args) {
-    if (!IsThereMatr(chatId, name)) {
+    if (!isThereMatr(chatId, name)) {
       bot.sendMessage(chatId, answ.matrNotExist + name);
     } else {
       const matr = matrices[chatId][name];
@@ -129,7 +135,7 @@ const transposeMatr = (chatId, args) => {
 
 const invertMatr = (chatId, args) => {
   for (const name of args) {
-    if (!IsThereMatr(chatId, name)) {
+    if (!isThereMatr(chatId, name)) {
       bot.sendMessage(chatId, answ.matrNotExist + name);
     } else {
       const matr = matrices[chatId][name];
@@ -144,7 +150,7 @@ const invertMatr = (chatId, args) => {
 
 const rangeOfMatr = (chatId, args) => {
   for (const name of args) {
-    if (!IsThereMatr(chatId, name)) {
+    if (!isThereMatr(chatId, name)) {
       bot.sendMessage(chatId, answ.matrNotExist + name);
     } else {
       const matr = matrices[chatId][name];
@@ -159,6 +165,8 @@ const getKeyboardArr = name => [[`/print ${name}`],
   [`/range ${name}`],
   [`/transpose ${name}`],
   [`/invert ${name}`],
+  ['/addmatrix'],
+  ['/solveSoLE'],
   ['/help'],
 ];
 
@@ -174,13 +182,11 @@ const resOfSoLEtoText = res => {
 };
 
 const solveSoLE = (chatId, text) => {
-  const rows = text.split('\n');
-  const matr = rows.map(row => row.split(' '));
-  if (Matrix.isValid(matr) && matr[0].length > 1) {
-    matrToFract(matr);
+  const matr = parseMatrix(text);
+  if (matr && matr[0].length > 1) {
     bot.sendMessage(chatId, systemToText(matr));
     const extendMatr = new Matrix(matr);
-    const solution = Matrix.findSolOfSoLE(extendMatr);
+    const solution = Equations.findSolOfSoLE(extendMatr);
     const text = resOfSoLEtoText(solution);
     bot.sendMessage(chatId, text);
   } else {
@@ -220,8 +226,7 @@ const getNameWraper = (handler, name, chatId) => {
 const addMatrix = (chatId, text, name) => {
   const matr = parseMatrix(text);
   bot.sendMessage(chatId, `Is your matrix:\n${matrixToText(matr)}`);
-  if (Matrix.isValid(matr)) {
-    matrToFract(matr);
+  if (matr) {
     if (!matrices[chatId]) {
       matrices[chatId] = {};
     }
