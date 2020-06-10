@@ -225,11 +225,11 @@ const getNameWraper = (handler, name, chatId) => {
 
 const addMatrix = (chatId, text, name) => {
   const matr = parseMatrix(text);
-  bot.sendMessage(chatId, `Is your matrix:\n${matrixToText(matr)}`);
   if (matr) {
     if (!matrices[chatId]) {
       matrices[chatId] = {};
     }
+    bot.sendMessage(chatId, `Is your matrix:\n${matrixToText(matr)}`);
     matrices[chatId][name] = new Matrix(matr);
     bot.sendMessage(chatId, 'What do you want to do ?', {
       'reply_markup': {
