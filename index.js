@@ -243,27 +243,27 @@ const inputMatrix = (chatId, name) => {
 };
 
 const comands = {
-  '/start': { funct: start, needArgs: false },
-  '/addmatrix': { funct: inputMatrix, needArgs: true },
-  '/print': { funct: printMatr, needArgs: true },
-  '/transpose': { funct: transposeMatr, needArgs: true },
-  '/invert': { funct: invertMatr, needArgs: true },
-  '/det': { funct: determinant, needArgs: true },
-  '/range': { funct: rangeOfMatr, needArgs: true },
-  '/solveSoLE': { funct: inputSoLe, needArgs: false },
-  '/help': { funct: help, needArgs: false }
+  '/start': start,
+  '/addmatrix': inputMatrix,
+  '/print': printMatr,
+  '/transpose': transposeMatr,
+  '/invert': invertMatr,
+  '/det': determinant,
+  '/range': rangeOfMatr,
+  '/solveSoLE': inputSoLe,
+  '/help': help,
 };
 
 const newComand = (chatId, text) => {
   const [comandName, ...args] = text.split(' ');
   const com = comands[comandName];
   if (com) {
-    if (!args[0] && com.needArgs) {
+    if (!args[0] && com.length > 1) {
       bot.sendMessage(chatId, answ.enterName);
       bot.once(chatId, (chatId, text) =>
-        getNameWraper(com.funct, text, chatId));
+        getNameWraper(com, text, chatId));
     } else {
-      com.funct(chatId, args);
+      com(chatId, args);
     }
   } else {
     bot.sendMessage(chatId, answ.invalidComand);
