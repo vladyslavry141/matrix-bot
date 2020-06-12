@@ -44,40 +44,6 @@ const systemToText = matr => {
   return text;
 };
 
-const matrToFract = matr => {
-  for (let i = 0; i < matr.length; i++) {
-    for (let j = 0; j < matr[0].length; j++) {
-      const el = Number(matr[i][j]);
-      if (!isNaN(el)) {
-        matr[i][j] = el;
-      }
-    }
-  }
-};
-
-const deleteEmptyStr = arr => {
-  for (let i = arr.length - 1; i >= 0; i--) {
-    if (arr[i] === '') {
-      arr.splice(i, 1);
-    }
-  }
-};
-
-const parseMatrix = text => {
-  const rows = text.split('\n');
-  const matr = rows.map(row => {
-    const splited = row.split(' ');
-    deleteEmptyStr(splited);
-    return splited;
-  });
-  if (Matrix.isValid(matr)) {
-    matrToFract(matr);
-    return matr;
-  } else {
-    return false
-  }
-};
-
 const printUsersMatr = chatId => {
   let text = 'Your matrices:\n';
   if (!matrices[chatId]) {
@@ -182,7 +148,7 @@ const resOfSoLEtoText = res => {
 };
 
 const solveSoLE = (chatId, text) => {
-  const matr = parseMatrix(text);
+  const matr = Matrix.parse(text);
   if (matr && matr[0].length > 1) {
     bot.sendMessage(chatId, systemToText(matr));
     const extendMatr = new Matrix(matr);
@@ -224,7 +190,7 @@ const getNameWraper = (handler, name, chatId) => {
 };
 
 const addMatrix = (chatId, text, name) => {
-  const matr = parseMatrix(text);
+  const matr = Matrix.parse(text);
   if (matr) {
     if (!matrices[chatId]) {
       matrices[chatId] = {};

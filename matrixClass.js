@@ -14,9 +14,6 @@ class Matrix {
     if (!Array.isArray(matrix[0])) {
       return false;
     }
-    if (matrix.length < 1) {
-      return false;
-    }
     const mainLen = matrix[0].length;
     for (let i = 0; i < matrix.length; i++) {
       const len = matrix[i].length;
@@ -30,6 +27,41 @@ class Matrix {
       }
     }
     return true;
+  }
+
+  static strToNum(matr)  {
+    for (let i = 0; i < matr.length; i++) {
+      for (let j = 0; j < matr[0].length; j++) {
+        const el = Number(matr[i][j]);
+        if (!isNaN(el)) {
+          matr[i][j] = el;
+        }
+      }
+    }
+  }
+
+  static parse(text) {
+    const rows = text.split('\n');
+    const matr = rows.map(row => row.split(' ')
+      .filter(el => el !== ''));
+    if (Matrix.isValid(matr)) {
+      Matrix.strToNum(matr);
+      return matr;
+    } else {
+      return false;
+    }
+  }
+
+  static toString(matr) {
+    let res = '';
+    for (const row of matr) {
+      res += row.join('  ') + '\n';
+    }
+    return res;
+  }
+
+  toString() {
+    return Matrix.toString(this.matrix)
   }
 
   static haveOneSize(matr1, matr2) {
