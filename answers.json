@@ -6,7 +6,7 @@
   "enterMatr": "Please, enter your matrix:",
   "invalidMatr": "Matrix is invalid.\nPlease enter your matrix again:",
   "matrNotExist": "This matrix didnt exist: ",
-  "matrNotSqured": "Matrix is not squared: ",
+  "matrNotSquared": "Matrix is not squared: ",
   "matrNotInvert": "Matrix is not invertible: ",
   "emptyList": "Your list of matrices is empty",
   "enterSystem": "Please enter your system matrix:",

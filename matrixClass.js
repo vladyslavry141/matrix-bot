@@ -61,7 +61,7 @@ class Matrix {
   }
 
   toString() {
-    return Matrix.toString(this.matrix)
+    return Matrix.toString(this.matrix);
   }
 
   static haveOneSize(matr1, matr2) {
@@ -186,7 +186,7 @@ class Matrix {
 
   getDet() {
     if (!this.isSquare()) {
-      return 'Matrix is not squared';
+      return undefined;
     }
     if (this.matrix.length < 3) return Matrix.getDet2x2(this);
     let det = 0;
