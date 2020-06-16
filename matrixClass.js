@@ -95,10 +95,10 @@ class Matrix {
   }
 
   static multMatrix(matr1, matr2) {
-    if (!Matrix.areAgreed(matr1, matr2)) {
-      return 'Matrices are not agreed';
-    }
     const res = [];
+    if (!Matrix.areAgreed(matr1, matr2)) {
+      return res;
+    }
     for (let i = 0; i < matr1.matrix.length; i++) {
       res[i] = [];
       for (let j = 0; j < matr2.matrix[0].length; j++) {
@@ -186,7 +186,7 @@ class Matrix {
 
   getDet() {
     if (!this.isSquare()) {
-      return 'Matrix is not square';
+      return 'Matrix is not squared';
     }
     if (this.matrix.length < 3) return Matrix.getDet2x2(this);
     let det = 0;
@@ -214,8 +214,8 @@ class Matrix {
 
   getInvert() {
     const det = this.getDet();
-    if (typeof det === 'string' || det === 0) {
-      return 'Matrix is not invertible';
+    if (det === undefined) {
+      return [];
     }
     if (this.matrix.length === 1) {
       const invertNum = RatFract.div(1, this.matrix[0][0]);

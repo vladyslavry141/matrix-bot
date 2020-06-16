@@ -122,6 +122,9 @@ class BotFunctions {
       } else {
         const matr = bot.matrices[chatId][name];
         const det = matr.getDet();
+        const text = det === undefined ?
+          answ.matrNotSquared + name :
+          `Det of ${name} = ${det}`
         bot.sendMessage(chatId, `Det of ${name} = ${det}`);
       }
     }
@@ -147,9 +150,12 @@ class BotFunctions {
       } else {
         const matr = bot.matrices[chatId][name];
         const invertedMatr = matr.getInvert();
-        const text = typeof invertedMatr === 'string' ?
-          invertedMatr : invertedMatr.toString();
-        bot.sendMessage(chatId, `Inverted to ${name}:\n${text}`);
+        if (invertedMatr[0]) {
+          const text = invertedMatr.toString(); 
+          bot.sendMessage(chatId, `Inverted to ${name}:\n${text}`);
+        } else {
+          bot.sendMessage(chatId, answ.matrNotInvert + name);  
+        }
       }
     }
   }
