@@ -150,7 +150,7 @@ class BotFunctions {
       } else {
         const matr = bot.matrices[chatId][name];
         const invertedMatr = matr.getInvert();
-        if (invertedMatr[0]) {
+        if (invertedMatr) {
           const text = invertedMatr.toString(); 
           bot.sendMessage(chatId, `Inverted to ${name}:\n${text}`);
         } else {

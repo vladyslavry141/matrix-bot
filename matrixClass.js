@@ -215,7 +215,7 @@ class Matrix {
   getInvert() {
     const det = this.getDet();
     if (det === undefined) {
-      return [];
+      return null;
     }
     if (this.matrix.length === 1) {
       const invertNum = RatFract.div(1, this.matrix[0][0]);
